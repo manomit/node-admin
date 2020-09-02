@@ -1,0 +1,47 @@
+<div class="authentication-main">
+    <div class="row">
+        <div class="col-md-4 p-0">
+            <div class="auth-innerleft">
+                <div class="text-center">
+                    <img src="http://d32zu6sws4tz5c.cloudfront.net/images/logo-login.png" class="logo-login" alt="">
+                    <hr>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 p-0">
+            <div class="auth-innerright">
+                <div class="authentication-box">
+                    
+                    <h4>{{title}}</h4>
+                    {{#if message}}
+                        <div class="alert alert-danger">
+                            <strong>Error! </strong>{{message}}
+                        </div>
+                    {{/if}}
+                    <div class="card mt-4 p-4 mb-0">
+                        <form class="theme-form" method="POST" action="/">
+                            <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                            <div class="form-group">
+                                <label class="col-form-label pt-0">Email</label>
+                                <input type="email" name="email" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label">Password</label>
+                                <input type="password" name="password" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="checkbox p-0">
+                                <input id="checkbox1" type="checkbox" name="remember_me">
+                                <label for="checkbox1">Remember me</label>
+                            </div>
+                            <div class="form-group form-row mt-3 mb-0">
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-secondary">LOGIN</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

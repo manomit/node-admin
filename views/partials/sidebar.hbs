@@ -1,0 +1,52 @@
+<div class="page-sidebar custom-scrollbar">
+    <div class="sidebar-user text-center">
+        <div>
+            <img class="img-50 rounded-circle" src="http://d32zu6sws4tz5c.cloudfront.net/images/user/1.jpg" alt="#">
+        </div>
+        <h6 class="mt-3 f-12">{{user.firstName}}&nbsp;{{user.lastName}}</h6>
+    </div>
+    <ul class="sidebar-menu">
+        {{!-- <li>
+            <div class="sidebar-title"></div>
+            <a href="/dashboard" class="sidebar-header {{#if_eq url "dashboard" }} active {{/if_eq}}">
+                <i class="icon-desktop"></i><span>Dashboard</span>
+            </a>
+        </li> --}}
+        <li>
+            <div class="sidebar-title"></div>
+            <a href="/users" class="sidebar-header {{#if_eq url "users" }} active {{/if_eq}}">
+                <i class="icon-user"></i><span>Users</span>
+            </a>
+        </li>
+        <li class="{{#if_eq url "sounds" }} active {{/if_eq}}">
+            <a href="javascript:void(0)" class="sidebar-header {{#if_eq url "sounds" }} active {{/if_eq}}">
+                <i class="icon-desktop"></i><span>All Sounds</span>
+                <i class="fa fa-angle-right pull-right"></i>
+            </a>
+            <ul class="sidebar-submenu">
+                <li><a href="/sounds/all-sound" class="{{#if_eq subUrl "all-sound" }} active {{/if_eq}}"><i class="fa fa-angle-right"></i>Sounds</a></li>
+                <li><a href="/sounds/all-section" class="{{#if_eq subUrl "all-section" }} active {{/if_eq}}"><i class="fa fa-angle-right"></i>Sections</a></li>
+            </ul>
+        </li>
+        <li>
+            <div class="sidebar-title"></div>
+            <a href="/videos" class="sidebar-header {{#if_eq url "videos" }} active {{/if_eq}}">
+                <i class="icon-user"></i><span>All Videos</span>
+            </a>
+        </li>
+        <li>
+            <div class="sidebar-title"></div>
+            <a href="/discovery-section" class="sidebar-header {{#if_eq url "discovery-section" }} active {{/if_eq}}">
+                <i class="icon-notepad"></i><span>Discovery sections</span>
+            </a>
+        </li>
+        <li>
+            <div class="sidebar-title"></div>
+            <a href="/change-password" class="sidebar-header {{#if_eq url "change-password" }} active {{/if_eq}}">
+                <i class="icon-key"></i><span>Change password</span>
+            </a>
+        </li>
+       
+    </ul>
+    
+</div>

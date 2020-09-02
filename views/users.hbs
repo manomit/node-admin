@@ -1,0 +1,238 @@
+    {{#content "title"}}Users{{/content}}
+    {{#content "style" mode="append"}}
+        <link rel="stylesheet" type="text/css" href="http://d32zu6sws4tz5c.cloudfront.net/css/datatables.css">{{/content}}
+
+    <div class="page-body">
+        <div class="container-fluid">
+            <div class="page-header">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h3>User list
+                            
+                        </h3>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+               
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <button type="button" class="btn btn-primary" id="addUser">Add</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="basic-1" class="display">
+                                    <thead>
+                                    <tr>
+                                        <th>User ID</th>
+                                        <th>Username</th>
+                                        <th>Name</th>
+                                        <th>Device</th>
+                                        <th>Created</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {{#each data}}
+                                            <tr>
+                                                <td>{{this.userId}}</td>
+                                                <td>{{this.username}}</td>
+                                                <td>{{this.name}}</td>
+                                                <td>{{this.device}}</td>
+                                                <td>{{dateFormat this.createdAt "DD-MM-YYYY HH:mm:ss"}}</td>
+                                                <td>
+                                                    <a 
+                                                        href="javascript:void(0);" 
+                                                        data-user-id="{{this._id}}"
+                                                        data-user-name="{{this.username}}"
+                                                        data-name="{{this.name}}"
+                                                        data-device="{{this.device}}" 
+                                                        class="btn btn-primary btn-sm aEdit"
+                                                    > 
+                                                        <span class="icon-pencil-alt"></span>
+                                                    </a>
+                                                    <a href="javascript:void(0)" data-user-id="{{this._id}}" class="btn btn-danger btn-sm aDelete"> <span class="icon-close"></span></a>
+                                                </td>
+                                            </tr>
+                                        {{/each}}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel2">New user</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="divAlert">
+                    
+                </div>
+                <div class="modal-body">
+                    <form id="frmAddUser"> 
+                        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                        <input type="hidden" id="_id" name="_id" value="">
+                        <div class="form-group">
+                            <label for="username" class="col-form-label" >Username:</label>
+                            <input type="text" class="form-control" name="username" id="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-form-label" >Name:</label>
+                            <input type="text" class="form-control" name="name" id="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="device" class="col-form-label" >Device:</label>
+                            <select name="device" id="device" class="form-control">
+                                <option value="">Select</option>
+                                <option value="Android">Android</option>
+                                <option value="iOS">iOS</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnAddUser" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{#content "script" mode="append"}}
+        <script src="http://d32zu6sws4tz5c.cloudfront.net/js/datatables/jquery.dataTables.min.js"></script>
+        <script src="http://d32zu6sws4tz5c.cloudfront.net/js/datatables/datatable.custom.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/additional-methods.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $("#addUser").click(function(e) {
+                    $("#exampleModalLabel2").html("New user");
+                    $("#addUserModal").modal({
+                        show: true,
+                        backdrop: 'static',
+                        keyboard: false
+                    }); 
+                    
+                });
+
+                $(".close").click(function(e) {
+                    $("#_id").val('');
+                    $('#frmAddUser')[0].reset();
+                });
+
+                $("#btnAddUser").click(function(e) {
+                    $("#frmAddUser").submit();
+                });
+
+                $("#frmAddUser").validate({
+                    rules: {
+                        name: {
+                            required: true
+                        },
+                        username: {
+                            required: true
+                        },
+                        device: {
+                            required: true
+                        }
+                    },
+                    messages: {
+                        name: {
+                            required: "Please enter name"
+                        },
+                        username: {
+                            required: "Please enter username"
+                        },
+                        device: {
+                            required: "Please select device type"
+                        }
+                    },
+                    submitHandler: function (form) {
+                        const formData = $("#frmAddUser").serialize();
+                        $.ajax({
+                            type: "POST",
+                            url: "/users",
+                            data: formData,
+                            beforeSend: function (xhr) {
+                                $("#btnAddUser").prop('disabled', true);
+                                $("#btnAddUser").html("Loading...");
+                            },
+                            success: function (response) {
+                                $("#divAlert").addClass('alert alert-success');
+                                $("#divAlert").append('<strong>'+response.message+'</strong>');
+                                $("#divAlert").fadeTo(1000, 1000).slideUp(1000, function(){
+                                    $("#divAlert").slideUp(1000);
+                                    $("#btnAddUser").prop('disabled', false);
+                                    $("#btnAddUser").html("Save");
+                                    window.location.href = "/users";
+                                });
+                                
+                            },
+                            error: function (xhr) {
+                                $("#divAlert").addClass('alert alert-danger');
+                                $("#divAlert").append('<ul></ul>');
+                                Object.keys(xhr.responseJSON.data[0]).map(function(key) {
+                                    $("#divAlert ul").append('<li>'+xhr.responseJSON.data[0][key]+'</li>')
+                                });
+                                $("#divAlert").fadeTo(2000, 2000).slideUp(2000, function(){
+                                    $("#divAlert").slideUp(2000);
+                                    $("#divAlert").empty();
+                                    $("#divAlert").removeClass('alert alert-danger');
+                                    $("#btnAddUser").prop('disabled', false);
+                                    $("#btnAddUser").html("Save");
+                                });
+                                
+                            }
+                        });
+                    }
+                })
+            });
+
+            $(document).on('click', '.aEdit', function(e) {
+                $("#_id").val($(this).data('user-id'));
+                $("#username").val($(this).data('user-name'));
+                $("#name").val($(this).data('name'));
+                $("#device").val($(this).data('device'));
+                $("#exampleModalLabel2").html("Edit user");
+                $("#addUserModal").modal({
+                    show: true,
+                    backdrop: 'static',
+                    keyboard: false
+                });
+            });
+
+            $(document).on('click', '.aDelete', function(e) {
+                if(confirm("Are you sure you want to delete this user?")) {
+                    $.ajax({
+                            type: "POST",
+                            url: "/users/delete",
+                            data: {
+                                _id: $(this).data('user-id')
+                            },
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader('X-CSRF-Token', "{{csrfToken}}");
+                            },
+                            success: function (response) {
+                                window.location.href = "/users";
+                                
+                            },
+                            error: function (xhr) {
+                                
+                            }
+                        });
+                }
+            })
+        </script>
+    {{/content}}

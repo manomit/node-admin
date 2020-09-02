@@ -1,0 +1,413 @@
+{{#content "title"}}{{title}}{{/content}}
+{{#content "style" mode="append"}}
+    <link rel="stylesheet" type="text/css" href="http://d32zu6sws4tz5c.cloudfront.net/css/datatables.css">
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <style>
+.ui-menu .ui-menu-item a {
+  font-size: 12px;
+}
+.ui-autocomplete {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1051 !important;
+  float: left;
+  display: none;
+  min-width: 160px;
+  _width: 160px;
+  padding: 4px 0;
+  margin: 2px 0 0 0;
+  list-style: none;
+  background-color: #ffffff;
+  border-color: #ccc;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-style: solid;
+  border-width: 1px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+  *border-right-width: 2px;
+  *border-bottom-width: 2px;
+}
+.ui-menu-item > a.ui-corner-all {
+    display: block;
+    padding: 3px 15px;
+    clear: both;
+    font-weight: normal;
+    line-height: 18px;
+    color: #555555;
+    white-space: nowrap;
+    text-decoration: none;
+}
+.ui-state-hover, .ui-state-active {
+      color: #ffffff;
+      text-decoration: none;
+      background-color: #0088cc;
+      border-radius: 0px;
+      -webkit-border-radius: 0px;
+      -moz-border-radius: 0px;
+      background-image: none;
+}
+    </style>
+{{/content}}
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h3>{{title}}</h3>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <button type="button" class="btn btn-primary" id="addVideo">Add</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="basic-1" class="display">
+                                <thead>
+                                <tr>
+                                    <th>SL No.</th>
+                                    <th>Preview</th>
+                                    <th>Username</th>
+                                    <th>Sound Name</th>
+                                    <th>Discovery Section</th>
+                                    <th>Created</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                    {{#each data}}
+                                        <tr>
+                                            <td>{{math @index "+" 1}}</td>
+                                            <td>
+                                                <a href="{{this.videoUrl}}" 
+                                                    target="_blank">
+                                                    <img src="https://my-node-admin.s3.ap-south-1.amazonaws.com/images/play.png" style="width: 30px;">
+                                                </a>
+                                            </td>
+                                            <td>{{this.user.username}}</td>
+                                            <td>{{this.sound.name}}</td>
+                                            <td>{{this.discoverSection.name}}</td>
+                                            <td>{{dateFormat this.createdAt "DD-MM-YYYY HH:mm:ss"}}</td>
+                                            <td>
+                                                <a 
+                                                    href="javascript:void(0);" 
+                                                    data-video-id="{{this._id}}"
+                                                    data-sound-name="{{this.sound.name}}"
+                                                    data-username="{{this.user.username}}"
+                                                    data-soundId="{{this.sound._id}}"
+                                                    data-userId="{{this.user._id}}"
+                                                    data-discovery-section-id="{{this.discoverSection._id}}"
+                                                    data-video-url="{{this.videoUrl}}"
+                                                    class="btn btn-primary btn-sm aEdit"
+                                                > 
+                                                    <span class="icon-pencil-alt"></span>
+                                                </a>
+                                                <a href="javascript:void(0)" data-video-id="{{this._id}}" class="btn btn-danger btn-sm aDelete"> <span class="icon-close"></span></a>
+                                            </td>
+                                        </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addVideoDataModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">Add Video</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="divAlert">
+                
+            </div>
+            <div class="modal-body">
+                <form id="frmAddVideoData"> 
+                    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                    <input type="hidden" id="_id" name="_id" value="">
+                    <input type="hidden" id="soundId" name="soundId" value="">
+                    <input type="hidden" id="userId" name="userId" value="">
+                    <div class="form-group">
+                        <label for="username" class="col-form-label" >Username:</label>
+                        <input type="text" class="form-control" name="username" id="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="soundname" class="col-form-label" >Sound Name:</label>
+                        <input type="text" class="form-control" name="soundname" id="soundname">
+                    </div>
+                    <div class="form-group">
+                        <label for="discoverySection" class="col-form-label" >Discovery Section:</label>
+                        <select id="discoverySection" name="discoverySection" class="form-control">
+                            <option value="">Select any</option>
+                            {{#each discoverySection}}
+                            <option value="{{this._id}}">{{this.name}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="videoFile" class="col-form-label" >Video:</label>
+                        <input type="file" class="form-control" name="videoFile" id="videoFile" accept="video/mp4,video/x-m4v,video/*">
+                    </div>
+                    <div class="form-group" id="showVideoFile" style="display: none;">
+                        
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnAddVideo" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+{{#content "script" mode="append"}}
+    <script src="http://d32zu6sws4tz5c.cloudfront.net/js/datatables/jquery.dataTables.min.js"></script>
+    <script src="http://d32zu6sws4tz5c.cloudfront.net/js/datatables/datatable.custom.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/additional-methods.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#addVideo").click(function(e) {
+                $("#exampleModalLabel2").html("Add Video Section");
+                $("#addVideoDataModal").modal({
+                    show: true,
+                    backdrop: 'static',
+                    keyboard: false
+                }); 
+                
+            });
+
+            $(".close").click(function(e) {
+                $("#_id").val('');
+                $('#frmAddVideoData')[0].reset();
+                $("#showVideoFile").empty();
+                $("#showVideoFile").hide();
+            });
+
+            $("#btnAddVideo").click(function(e) {
+                $("#frmAddVideoData").submit();
+            });
+
+            $("#frmAddVideoData").validate({
+                rules: {
+                    discoverySection: {
+                        required: true
+                    },
+                    videoFile: {
+                        required: {
+                            depends: function(element) {
+                                return $("#_id").val() === ""
+                            }
+                        },
+                        accept: "video/mp4,video/x-m4v,video/*"
+                    },
+                    soundname: {
+                        required: true
+                    },
+                    username: {
+                        required: true
+                    }
+                },
+                messages: {
+                    soundname: {
+                        required: "Type a sound name and choose from auto-complete"
+                    },
+                    username: {
+                        required: "Type a username and choose from auto-complete"
+                    },
+                    discoverySection: {
+                        required: "Please select discovery section"
+                    },
+                    videoFile: {
+                        required: "Please upload video file"
+                    }
+                },
+                submitHandler: function (form) {
+                    const formData = new FormData($('#frmAddVideoData')[0]);
+                    $.ajax({
+                        type: "POST",
+                        url: "/videos",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        async: true,
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('X-CSRF-Token', "{{csrfToken}}");
+                            $("#btnAddVideo").prop('disabled', true);
+                            $("#btnAddVideo").html("Loading...");
+                        },
+                        success: function (response) {
+                            $("#divAlert").addClass('alert alert-success');
+                            $("#divAlert").append('<strong>'+response.message+'</strong>');
+                            $("#divAlert").fadeTo(1000, 1000).slideUp(1000, function(){
+                                $("#divAlert").slideUp(1000);
+                                $("#btnAddVideo").prop('disabled', false);
+                                $("#btnAddVideo").html("Save");
+                                window.location.href = "/videos";
+                            });
+                        },
+                        error: function (xhr) {
+                            $("#divAlert").addClass('alert alert-danger');
+                            $("#divAlert").append('<ul></ul>');
+                            Object.keys(xhr.responseJSON.data[0]).map(function(key) {
+                                $("#divAlert ul").append('<li>'+xhr.responseJSON.data[0][key]+'</li>')
+                            });
+                            $("#divAlert").fadeTo(2000, 2000).slideUp(2000, function(){
+                                $("#divAlert").slideUp(2000);
+                                $("#divAlert").empty();
+                                $("#divAlert").removeClass('alert alert-danger');
+                                $("#btnAddVideo").prop('disabled', false);
+                                $("#btnAddVideo").html("Save");
+                            });
+                            
+                        }
+                    });
+                }
+            });
+
+
+            $( "#username" ).autocomplete({
+                source: function( request, response ) {
+                    $.ajax({
+                    url: "/users/search-by-name",
+                    data: {
+                        q: request.term
+                    },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('X-CSRF-Token', "{{csrfToken}}");
+                    },
+                    success: function( data ) {
+                        response($.map(data, function (el) {
+                            return {
+                                label: el.username,
+                                value: el._id
+                            };
+                        }));
+                    }
+                    });
+                },
+                minLength: 2,
+                focus: function (event, ui) {
+                    this.value = ui.item.label;
+                    // Prevent other event from not being execute
+                    event.preventDefault();
+                },
+                select: function (event, ui) {
+                    // Prevent value from being put in the input:
+                    this.value = ui.item.label;
+                    // Set the id to the next input hidden field
+                    $(this).next("input").val(ui.item.value);
+                    // Prevent other event from not being execute            
+                    event.preventDefault();
+                    
+                }
+            });
+
+            $( "#soundname" ).autocomplete({
+                source: function( request, response ) {
+                    $.ajax({
+                    url: "/sounds/search-by-name",
+                    data: {
+                        q: request.term
+                    },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('X-CSRF-Token', "{{csrfToken}}");
+                    },
+                    success: function( data ) {
+                        response($.map(data, function (el) {
+                            return {
+                                label: el.name,
+                                value: el._id
+                            };
+                        }));
+                    }
+                    });
+                },
+                minLength: 2,
+                focus: function (event, ui) {
+                    this.value = ui.item.label;
+                    // Prevent other event from not being execute
+                    event.preventDefault();
+                },
+                select: function (event, ui) {
+                    // Prevent value from being put in the input:
+                    this.value = ui.item.label;
+                    // Set the id to the next input hidden field
+                    $(this).next("input").val(ui.item.value);
+                    // Prevent other event from not being execute            
+                    event.preventDefault();
+                    
+                }
+            });
+        });
+
+        $(document).on('click', '.aEdit', function(e) {
+            $("#_id").val($(this).data('video-id'));
+            $("#soundId").val($(this).data('soundId'));
+            $("#userId").val($(this).data('userId'));
+            $("#username").val($(this).data('username'));
+            $("#soundname").val($(this).data('sound-name'));
+            $("#discoverySection").val($(this).data('discovery-section-id'));
+            
+            //$("#soundFileAudio").attr('src', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+            $("#showVideoFile").html('<a href="'+$(this).data('video-url')+'" target="_blank" <img src="https://my-node-admin.s3.ap-south-1.amazonaws.com/images/play.png" style="width: 30px;" /></a>')
+            $("#showVideoFile").show();
+            
+            $("#exampleModalLabel2").html("Edit Video Section");
+            $("#addVideoDataModal").modal({
+                show: true,
+                backdrop: 'static',
+                keyboard: false
+            });
+        });
+
+        $(document).on('click', '.aDelete', function(e) {
+            if(confirm("Are you sure you want to delete this video?")) {
+                $.ajax({
+                        type: "POST",
+                        url: "/videos/delete",
+                        data: {
+                            _id: $(this).data('video-id')
+                        },
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('X-CSRF-Token', "{{csrfToken}}");
+                        },
+                        success: function (response) {
+                            window.location.href = "/videos";
+                            
+                        },
+                        error: function (xhr) {
+                            
+                        }
+                    });
+            }
+        })
+    </script>
+{{/content}}
