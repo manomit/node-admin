@@ -103,7 +103,7 @@
                                             </td>
                                             <td>{{this.user.username}}</td>
                                             <td>{{this.sound.name}}</td>
-                                            <td>{{this.discoverSection.name}}</td>
+                                            <td>{{this.discoverySection.name}}</td>
                                             <td>{{dateFormat this.createdAt "DD-MM-YYYY HH:mm:ss"}}</td>
                                             <td>
                                                 <a 
@@ -111,9 +111,9 @@
                                                     data-video-id="{{this._id}}"
                                                     data-sound-name="{{this.sound.name}}"
                                                     data-username="{{this.user.username}}"
-                                                    data-soundId="{{this.sound._id}}"
-                                                    data-userId="{{this.user._id}}"
-                                                    data-discovery-section-id="{{this.discoverSection._id}}"
+                                                    data-soundid="{{this.sound._id}}"
+                                                    data-userid="{{this.user._id}}"
+                                                    data-discovery-section-id="{{this.discoverySection._id}}"
                                                     data-video-url="{{this.videoUrl}}"
                                                     class="btn btn-primary btn-sm aEdit"
                                                 > 
@@ -229,10 +229,18 @@
                         accept: "video/mp4,video/x-m4v,video/*"
                     },
                     soundname: {
-                        required: true
+                        required: {
+                            depends: function(element) {
+                                return $("#soundId").val() === "" || $("#soundname").val() === ""
+                            }
+                        },
                     },
                     username: {
-                        required: true
+                        required: {
+                            depends: function(element) {
+                                return $("#userId").val() === "" || $("#username").val() === ""
+                            }
+                        },
                     }
                 },
                 messages: {
@@ -295,6 +303,7 @@
 
             $( "#username" ).autocomplete({
                 source: function( request, response ) {
+                    $("#userId").val('');
                     $.ajax({
                     url: "/users/search-by-name",
                     data: {
@@ -313,7 +322,7 @@
                     }
                     });
                 },
-                minLength: 2,
+                minLength: 1,
                 focus: function (event, ui) {
                     this.value = ui.item.label;
                     // Prevent other event from not being execute
@@ -323,7 +332,7 @@
                     // Prevent value from being put in the input:
                     this.value = ui.item.label;
                     // Set the id to the next input hidden field
-                    $(this).next("input").val(ui.item.value);
+                    $("#userId").val(ui.item.value);
                     // Prevent other event from not being execute            
                     event.preventDefault();
                     
@@ -332,6 +341,7 @@
 
             $( "#soundname" ).autocomplete({
                 source: function( request, response ) {
+                    $("#soundId").val('');
                     $.ajax({
                     url: "/sounds/search-by-name",
                     data: {
@@ -350,7 +360,7 @@
                     }
                     });
                 },
-                minLength: 2,
+                minLength: 1,
                 focus: function (event, ui) {
                     this.value = ui.item.label;
                     // Prevent other event from not being execute
@@ -360,7 +370,7 @@
                     // Prevent value from being put in the input:
                     this.value = ui.item.label;
                     // Set the id to the next input hidden field
-                    $(this).next("input").val(ui.item.value);
+                    $("#soundId").val(ui.item.value);
                     // Prevent other event from not being execute            
                     event.preventDefault();
                     
@@ -370,8 +380,8 @@
 
         $(document).on('click', '.aEdit', function(e) {
             $("#_id").val($(this).data('video-id'));
-            $("#soundId").val($(this).data('soundId'));
-            $("#userId").val($(this).data('userId'));
+            $("#soundId").val($(this).data('soundid'));
+            $("#userId").val($(this).data('userid'));
             $("#username").val($(this).data('username'));
             $("#soundname").val($(this).data('sound-name'));
             $("#discoverySection").val($(this).data('discovery-section-id'));

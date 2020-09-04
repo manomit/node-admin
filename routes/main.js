@@ -374,7 +374,7 @@ router.get('/videos', auth, csrfProtection, async (req, res) => {
         .find({isDeleted: false})
         .populate('sound')
         .populate('user')
-        .populate('discoverSection')
+        .populate('discoverySection')
         .sort({createdAt: -1}).lean();
     const discoverySection = await DiscoverySection.find({isDeleted: false}).sort({createdAt: -1}).lean();
 
@@ -393,7 +393,7 @@ router.get('/videos', auth, csrfProtection, async (req, res) => {
         data.push({
             user: elem.user,
             sound: elem.sound,
-            discoverSection: elem.discoverSection,
+            discoverySection: elem.discoverySection,
             _id: elem._id,
             createdAt: elem.createdAt,
             videoUrl
@@ -409,6 +409,48 @@ router.get('/videos', auth, csrfProtection, async (req, res) => {
             csrfToken: req.csrfToken()
         }
     );
+});
+
+router.post('/videos', auth, csrfProtection, uploadVideo.single('videoFile'), async (req, res) => {
+    const { soundId, discoverySection, userId, _id } = req.body;
+    try {
+        if (_id) {
+            const videoData = await VideoData.findById(_id);
+            await VideoData.updateOne({
+                _id
+            }, {
+                $set: {
+                    sound: soundId,
+                    user: userId,
+                    discoverySection,
+                    videoFile: req.file ? req.file.key : videoData.videoFile
+                }
+            });
+            res.status(201).json({message: 'Video updated successfully'});
+        } else {
+            const data = await VideoData.create({
+                sound: soundId,
+                user: userId,
+                discoverySection,
+                videoFile: req.file.key
+            });
+            res.status(201).json({data, message: 'Video record created successfully'});
+        }
+    } catch (error) {
+        const data = validationErrorObj(error.message);
+        res.status(500).json({data});
+    }
+});
+
+router.post('/videos/delete', auth, csrfProtection, async (req, res) => {
+    await VideoData.updateOne({
+        _id: req.body._id
+    }, {
+        $set: {
+            isDeleted: true
+        }
+    });
+    res.status(201).json({data: null, message: 'Video deleted successfully'});
 });
 
 

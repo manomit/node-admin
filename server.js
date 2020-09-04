@@ -13,17 +13,17 @@ handlebars.registerHelper(layouts(handlebars));
 const app = express();
 require('./config/passport')(passport);
 
-if(cluster.isMaster) {
-    const cpuCount = require('os').cpus().length;
+// if(cluster.isMaster) {
+//     const cpuCount = require('os').cpus().length;
 
-    for(let i = 0; i < cpuCount; i++) {
-        cluster.fork();
-    }
-    cluster.on('exit', worker => {
-        console.log(`Worker ${worker.id} died :(`);
-        cluster.fork();
-    })
-} else {
+//     for(let i = 0; i < cpuCount; i++) {
+//         cluster.fork();
+//     }
+//     cluster.on('exit', worker => {
+//         console.log(`Worker ${worker.id} died :(`);
+//         cluster.fork();
+//     })
+// } else {
     db
     .connect(`${process.env.DB_HOST}`)
     .then(() => require('./middlewares')(app, passport))
@@ -35,4 +35,4 @@ if(cluster.isMaster) {
                 console.log(`Server is running on ${process.env.PORT}`)
             })
     })
-}
+// }

@@ -16,7 +16,7 @@ const videoDataSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    discoverSection: {
+    discoverySection: {
         type: Schema.Types.ObjectId,
         ref: 'DiscoverySection'
     },
