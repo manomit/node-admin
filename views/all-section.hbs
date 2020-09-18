@@ -7,7 +7,7 @@
             <div class="page-header">
                 <div class="row">
                     <div class="col-lg-6">
-                        <h3>All Sections
+                        <h3>All Types
                             
                         </h3>
                     </div>
@@ -67,7 +67,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel2">Add Sound Section</h5>
+                    <h5 class="modal-title" id="exampleModalLabel2">Add Types</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -100,7 +100,7 @@
         <script>
             $(document).ready(function() {
                 $("#addSection").click(function(e) {
-                    $("#exampleModalLabel2").html("Add Sound Section");
+                    $("#exampleModalLabel2").html("Add Types");
                     $("#addSoundSectionModal").modal({
                         show: true,
                         backdrop: 'static',
@@ -173,7 +173,7 @@
             $(document).on('click', '.aEdit', function(e) {
                 $("#_id").val($(this).data('section-id'));
                 $("#name").val($(this).data('name'));
-                $("#exampleModalLabel2").html("Edit Sound Section");
+                $("#exampleModalLabel2").html("Edit Types");
                 $("#addSoundSectionModal").modal({
                     show: true,
                     backdrop: 'static',
@@ -182,7 +182,7 @@
             });
 
             $(document).on('click', '.aDelete', function(e) {
-                if(confirm("Are you sure you want to delete this sound section?")) {
+                if(confirm("Are you sure you want to delete this sound type?")) {
                     $.ajax({
                             type: "POST",
                             url: "/sounds/all-section/delete",

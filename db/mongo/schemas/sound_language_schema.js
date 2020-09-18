@@ -3,30 +3,28 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const soundDataSchema = new Schema({
+const soundLanguage = new Schema({
     name: {
         type: String,
+        unique: true,
         required: true
     },
-    soundFile: {
+    code: {
         type: String,
+        unique: true,
         required: true
     },
-    soundSection: [{
-        type: Schema.Types.ObjectId,
-        ref: 'SoundSection'
-    }],
-    soundLanguage: [{
-        type: Schema.Types.ObjectId,
-        ref: 'SoundLanguage'
-    }],
     isDeleted: {
         type: Boolean,
         default: false
+    },
+    createdBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'Admin'
     }
 }, {
     versionKey: false,
     timestamps: true
 });
 
-module.exports = mongoose.model('SoundData', soundDataSchema);
+module.exports = mongoose.model('SoundLanguage', soundLanguage);

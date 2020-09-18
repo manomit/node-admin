@@ -7,4 +7,5 @@ module.exports = {
   soundSectionSchema: require('./sound_section_schema'),
   soundDataSchema: require('./sound_data_schema'),
   videoDataSchema: require('./video_data_schema'),
+  soundLanguageSchema: require('./sound_language_schema'),
 };

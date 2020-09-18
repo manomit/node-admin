@@ -9,6 +9,7 @@ const express = require('express'),
       SoundSection = require('../db/mongo/schemas').soundSectionSchema,
       SoundData = require('../db/mongo/schemas').soundDataSchema,
       VideoData = require('../db/mongo/schemas').videoDataSchema,
+      SoundLanguage = require('../db/mongo/schemas').soundLanguageSchema,
       auth = require('../middlewares/auth'),
       {v4} = require('uuid'),
       { validationErrorObj } = require('../middlewares/validationError'),
@@ -295,9 +296,9 @@ router.post('/sounds/all-section/delete', auth, csrfProtection, async (req, res)
 });
 
 router.get('/sounds/all-sound', auth, csrfProtection, async(req, res) => {
-    const soundDetails = await SoundData.find({isDeleted: false}).populate('soundSection').sort({createdAt: -1}).lean();
+    const soundDetails = await SoundData.find({isDeleted: false}).populate('soundSection').populate('soundLanguage').sort({createdAt: -1}).lean();
     const soundSections = await SoundSection.find({isDeleted: false}).sort({createdAt: -1}).lean();
-
+    const soundLanguages = await SoundLanguage.find({isDeleted: false}).sort({createdAt: -1}).lean();
     const data = [];
     for(const elem of soundDetails) {
         const params = {
@@ -312,7 +313,10 @@ router.get('/sounds/all-sound', auth, csrfProtection, async(req, res) => {
         });
         data.push({
             name: elem.name,
-            soundSection: elem.soundSection,
+            soundSection: elem.soundSection.map(val => val._id),
+            soundLanguage: elem.soundLanguage.map(val => val._id),
+            soundSectionName: elem.soundSection.map(val => val.name).join(","),
+            soundLanguageName: elem.soundLanguage.map(val => val.name).join(","),
             _id: elem._id,
             createdAt: elem.createdAt,
             soundUrl
@@ -325,12 +329,13 @@ router.get('/sounds/all-sound', auth, csrfProtection, async(req, res) => {
             title: 'All Sounds',
             data,
             soundSections,
+            soundLanguages,
             csrfToken: req.csrfToken()
         }
     )
 });
 router.post('/sounds/all-sound', auth, csrfProtection, uploadSound.single('soundFile'), async (req, res) => {
-    const { name, soundSection, _id } = req.body;
+    const { name, soundSection,soundLanguage, _id } = req.body;
     try {
         if (_id) {
             const soundData = await SoundData.findById(_id);
@@ -340,6 +345,7 @@ router.post('/sounds/all-sound', auth, csrfProtection, uploadSound.single('sound
                 $set: {
                     name,
                     soundSection,
+                    soundLanguage,
                     soundFile: req.file ? req.file.key : soundData.soundFile
                 }
             });
@@ -348,6 +354,7 @@ router.post('/sounds/all-sound', auth, csrfProtection, uploadSound.single('sound
             const data = await SoundData.create({
                 name,
                 soundSection,
+                soundLanguage,
                 soundFile: req.file.key
             });
             res.status(201).json({data, message: 'Sound record created successfully'});
@@ -488,6 +495,60 @@ router.get('/sounds/search-by-name', auth, csrfProtection, async (req, res) => {
            }, 404);
         }
     });
+});
+
+
+
+router.get('/sounds/language', auth, csrfProtection, async(req, res) => {
+    const data = await SoundLanguage.find({isDeleted: false}).sort({createdAt: -1}).lean();
+    res.render(
+        'language',
+        {
+            layout: 'main',
+            title: 'Language',
+            data,
+            csrfToken: req.csrfToken()
+        }
+    )
+});
+
+router.post('/sounds/language', auth, csrfProtection, async (req, res) => {
+    const { name, code, _id } = req.body;
+    
+    try {
+        if(_id) {
+            await SoundLanguage.updateOne({
+                _id
+            }, {
+                $set: {
+                    name,
+                    code
+                }
+            });
+            res.status(201).json({data: null, message: 'Language updated successfully'});
+        } else {
+            const data = await SoundLanguage.create({
+                name,
+                code,
+                createdBy: req.user._id
+            });
+            res.status(201).json({data, message: 'Language created successfully'});
+        }
+        
+    } catch(error) {
+        const data = validationErrorObj(error.message);
+        res.status(500).json({data});
+    }
+});
+router.post('/sounds/language/delete', auth, csrfProtection, async (req, res) => {
+    await SoundLanguage.updateOne({
+        _id: req.body._id
+    }, {
+        $set: {
+            isDeleted: true
+        }
+    });
+    res.status(201).json({data: null, message: 'Language deleted successfully'});
 });
 // router.get('/signup', async (req, res) => {
 //     const data = await Admin.create({
