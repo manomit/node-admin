@@ -8,4 +8,5 @@ module.exports = {
   soundDataSchema: require('./sound_data_schema'),
   videoDataSchema: require('./video_data_schema'),
   soundLanguageSchema: require('./sound_language_schema'),
+  profileVerification: require('./user_profile_verification_schema',)
 };

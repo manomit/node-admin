@@ -27,6 +27,18 @@ const adminSchema = new mongoose.Schema(
     },
     gravatar: {
       type: String
+    },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'Admin'
+    },
+    updatedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'Admin'
+    },
+    adminType: {
+      type: String,
+      enum: ["SUPER_ADMIN", "ADMIN"]
     }
   },
   {

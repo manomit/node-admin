@@ -21,7 +21,11 @@ const soundLanguage = new Schema({
     createdBy: {
         type: Schema.Types.ObjectId,
         ref: 'Admin'
-    }
+    },
+    updatedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'Admin'
+    },
 }, {
     versionKey: false,
     timestamps: true

@@ -3,8 +3,8 @@ const expHbs = require('express-handlebars'),
       bodyParser = require('body-parser'),
       session = require('express-session'),
       cookieParser = require('cookie-parser'),
-      redis = require('redis'),
-      redisStore = require('connect-redis')(session),
+      // redis = require('redis'),
+      // redisStore = require('connect-redis')(session),
       flash = require('connect-flash'),
       cors = require('cors'),
       compression = require('compression'),
@@ -16,7 +16,7 @@ const s3 = new AWS.S3({
     secretAccessKey: process.env.SECRET_ACCESS_KEY,
     region: process.env.REGION
 });
-const client = redis.createClient();
+// const client = redis.createClient();
 const hbs = expHbs.create({
     extname: '.hbs',
     helpers: {
@@ -64,11 +64,11 @@ module.exports = (app, passport) => {
     .use(bodyParser.urlencoded({extended: true}))
     .use(bodyParser.json())
     .use(session({
-        store: new redisStore({
-            host: process.env.REDIS_HOST,
-            port: process.env.REDIS_PORT,
-            client
-        }),
+        // store: new redisStore({
+        //     host: process.env.REDIS_HOST,
+        //     port: process.env.REDIS_PORT,
+        //     client
+        // }),
         secret: process.env.SESSION_SECRET,
         saveUninitialized: false,
         resave: true,

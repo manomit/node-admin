@@ -1,4 +1,4 @@
-    {{#content "title"}}Users{{/content}}
+    {{#content "title"}}Super Admins/Admins{{/content}}
     {{#content "style" mode="append"}}
         <link rel="stylesheet" type="text/css" href="https://d32zu6sws4tz5c.cloudfront.net/css/datatables.css">{{/content}}
 
@@ -7,7 +7,7 @@
             <div class="page-header">
                 <div class="row">
                     <div class="col-lg-6">
-                        <h3>User list
+                        <h3>Super Admin/Admin list
                             
                         </h3>
                     </div>
@@ -21,17 +21,18 @@
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-header">
-                            <button type="button" class="btn btn-primary" id="addUser">Add</button>
+                            <button type="button" class="btn btn-primary" id="addAdmin">Add</button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="basic-1" class="display">
                                     <thead>
                                     <tr>
-                                        <th>User ID</th>
-                                        <th>Username</th>
-                                        <th>Name</th>
-                                        <th>Device</th>
+                                        
+                                        <th>Email</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Type</th>
                                         <th>Created</th>
                                         <th>Action</th>
                                     </tr>
@@ -40,24 +41,25 @@
                                     <tbody>
                                         {{#each data}}
                                             <tr>
-                                                <td>{{this.userId}}</td>
-                                                <td>{{this.username}}</td>
-                                                <td>{{this.name}}</td>
-                                                <td>{{this.device}}</td>
+                                                <td>{{this.email}}</td>
+                                                <td>{{this.firstName}}</td>
+                                                <td>{{this.lastName}}</td>
+                                                <td>{{this.adminType}}</td>
                                                 <td>{{dateFormat this.createdAt "DD-MM-YYYY HH:mm:ss"}}</td>
                                                 <td>
                                                     <a 
                                                         href="javascript:void(0);" 
-                                                        data-user-id="{{this._id}}"
-                                                        data-user-name="{{this.username}}"
-                                                        data-name="{{this.name}}"
-                                                        data-device="{{this.device}}" 
+                                                        data-admin-id="{{this._id}}"
+                                                        data-admin-email="{{this.email}}"
+                                                        data-first-name="{{this.firstName}}"
+                                                        data-last-name="{{this.lastName}}"
+                                                        data-type="{{this.type}}" 
                                                         class="btn btn-primary btn-sm aEdit"
                                                     > 
                                                         <span class="icon-pencil-alt"></span>
                                                     </a>
-                                                    <!-- <a href="javascript:void(0)" data-user-id="{{this._id}}" class="btn btn-danger btn-sm aDelete"> <span class="icon-close"></span></a> -->
-                                                    <a href="javascript:void(0)" data-user-id="{{this._id}}" class="btn btn-danger btn-sm aDelete"> Block</a>
+                                                    <!-- <a href="javascript:void(0)" data-admin-id="{{this._id}}" class="btn btn-danger btn-sm aDelete"> <span class="icon-close"></span></a> -->
+                                                    <!-- <a href="javascript:void(0)" data-admin-id="{{this._id}}" class="btn btn-danger btn-sm aDelete"> Block</a> -->
                                                 </td>
                                             </tr>
                                         {{/each}}
@@ -70,11 +72,11 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addAdminMOdal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel2">New user</h5>
+                    <h5 class="modal-title" id="exampleModalLabel2">New admin</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -83,30 +85,39 @@
                     
                 </div>
                 <div class="modal-body">
-                    <form id="frmAddUser"> 
+                    <form id="frmAddAdmin"> 
                         <input type="hidden" name="_csrf" value="{{csrfToken}}">
                         <input type="hidden" id="_id" name="_id" value="">
                         <div class="form-group">
-                            <label for="username" class="col-form-label" >Username:</label>
-                            <input type="text" class="form-control" name="username" id="username">
+                            <label for="email" class="col-form-label" >Email:</label>
+                            <input type="email" class="form-control" name="email" id="email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password" class="col-form-label" >Password:</label>
+                            <input type="password" class="form-control" name="password" id="password">
                         </div>
                         
                         <div class="form-group">
-                            <label for="name" class="col-form-label" >Name:</label>
-                            <input type="text" class="form-control" name="name" id="name">
+                            <label for="firstName" class="col-form-label" >First Name:</label>
+                            <input type="text" class="form-control" name="firstName" id="firstName">
                         </div>
                         <div class="form-group">
-                            <label for="device" class="col-form-label" >Device:</label>
-                            <select name="device" id="device" class="form-control">
+                            <label for="lastName" class="col-form-label" >Last Name:</label>
+                            <input type="text" class="form-control" name="lastName" id="lastName">
+                        </div>
+                        <div class="form-group">
+                            <label for="adminType" class="col-form-label" >Type:</label>
+                            <select name="adminType" id="adminType" class="form-control">
                                 <option value="">Select</option>
-                                <option value="Android">Android</option>
-                                <option value="iOS">iOS</option>
+                                <option value="SUPER_ADMIN">Super Admin</option>
+                                <option value="ADMIN">Admin</option>
                             </select>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="btnAddUser" class="btn btn-primary">Save</button>
+                    <button type="button" id="btnAddAdmin" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </div>
@@ -119,9 +130,9 @@
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/additional-methods.min.js"></script>
         <script>
             $(document).ready(function() {
-                $("#addUser").click(function(e) {
-                    $("#exampleModalLabel2").html("New user");
-                    $("#addUserModal").modal({
+                $("#addAdmin").click(function(e) {
+                    $("#exampleModalLabel2").html("New admin");
+                    $("#addAdminMOdal").modal({
                         show: true,
                         backdrop: 'static',
                         keyboard: false
@@ -131,54 +142,72 @@
 
                 $(".close").click(function(e) {
                     $("#_id").val('');
-                    $('#frmAddUser')[0].reset();
+                    $('#frmAddAdmin')[0].reset();
                 });
 
-                $("#btnAddUser").click(function(e) {
-                    $("#frmAddUser").submit();
+                $("#btnAddAdmin").click(function(e) {
+                    $("#frmAddAdmin").submit();
                 });
 
-                $("#frmAddUser").validate({
+                $("#frmAddAdmin").validate({
                     rules: {
-                        name: {
+                        email: {
+                            required: true,
+                            email: true
+                        },
+                        password: {
+                            required: true,
+                            minlength: 6,
+                            maxlength: 32
+                        },
+                        firstName: {
                             required: true
                         },
-                        username: {
+                        lastName: {
                             required: true
                         },
-                        device: {
+                        adminType: {
                             required: true
                         }
                     },
                     messages: {
-                        name: {
-                            required: "Please enter name"
+                        email: {
+                            required: "Please enter email",
+                            email: "Please enter valid email"
                         },
-                        username: {
-                            required: "Please enter username"
+                        password: {
+                            required: "Please enter password",
+                            minlength: "Password must be 6 character long",
+                            maxlength: "Password can't be more than 32 character long"
                         },
-                        device: {
-                            required: "Please select device type"
+                        firstName: {
+                            required: "Please enter first name"
+                        },
+                        lastName: {
+                            required: "Please enter last name"
+                        },
+                        adminType: {
+                            required: "Please select admin type"
                         }
                     },
                     submitHandler: function (form) {
-                        const formData = $("#frmAddUser").serialize();
+                        const formData = $("#frmAddAdmin").serialize();
                         $.ajax({
                             type: "POST",
-                            url: "/users",
+                            url: "/admins",
                             data: formData,
                             beforeSend: function (xhr) {
-                                $("#btnAddUser").prop('disabled', true);
-                                $("#btnAddUser").html("Loading...");
+                                $("#btnAddAdmin").prop('disabled', true);
+                                $("#btnAddAdmin").html("Loading...");
                             },
                             success: function (response) {
                                 $("#divAlert").addClass('alert alert-success');
                                 $("#divAlert").append('<strong>'+response.message+'</strong>');
                                 $("#divAlert").fadeTo(1000, 1000).slideUp(1000, function(){
                                     $("#divAlert").slideUp(1000);
-                                    $("#btnAddUser").prop('disabled', false);
-                                    $("#btnAddUser").html("Save");
-                                    window.location.href = "/users";
+                                    $("#btnAddAdmin").prop('disabled', false);
+                                    $("#btnAddAdmin").html("Save");
+                                    window.location.href = "/admins";
                                 });
                                 
                             },
@@ -192,8 +221,8 @@
                                     $("#divAlert").slideUp(2000);
                                     $("#divAlert").empty();
                                     $("#divAlert").removeClass('alert alert-danger');
-                                    $("#btnAddUser").prop('disabled', false);
-                                    $("#btnAddUser").html("Save");
+                                    $("#btnAddAdmin").prop('disabled', false);
+                                    $("#btnAddAdmin").html("Save");
                                 });
                                 
                             }
@@ -203,12 +232,13 @@
             });
 
             $(document).on('click', '.aEdit', function(e) {
-                $("#_id").val($(this).data('user-id'));
-                $("#username").val($(this).data('user-name'));
-                $("#name").val($(this).data('name'));
-                $("#device").val($(this).data('device'));
-                $("#exampleModalLabel2").html("Edit user");
-                $("#addUserModal").modal({
+                $("#_id").val($(this).data('admin-id'));
+                $("#email").val($(this).data('admin-email'));
+                $("#firstName").val($(this).data('first-name'));
+                $("#lastName").val($(this).data('last-name'));
+                $("#adminType").val($(this).data('type'));
+                $("#exampleModalLabel2").html("Edit admin");
+                $("#addAdminMOdal").modal({
                     show: true,
                     backdrop: 'static',
                     keyboard: false
@@ -216,18 +246,18 @@
             });
 
             $(document).on('click', '.aDelete', function(e) {
-                if(confirm("Are you sure you want to delete this user?")) {
+                if(confirm("Are you sure you want to delete this admin?")) {
                     $.ajax({
                             type: "POST",
-                            url: "/users/delete",
+                            url: "/admins/delete",
                             data: {
-                                _id: $(this).data('user-id')
+                                _id: $(this).data('admin-id')
                             },
                             beforeSend: function (xhr) {
                                 xhr.setRequestHeader('X-CSRF-Token', "{{csrfToken}}");
                             },
                             success: function (response) {
-                                window.location.href = "/users";
+                                window.location.href = "/admins";
                                 
                             },
                             error: function (xhr) {

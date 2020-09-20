@@ -17,7 +17,7 @@ const connect = (address, options) => {
   return new Promise((resolve, reject) => {
     mongoose.connection.once('open', () => {
       require('./schemas');
-      console.log('Database Connected : ', mongoose.connection.port);
+      // console.log('Database Connected : ', mongoose.connection.port);
       resolve();
     });
     mongoose.connection.on('error', err => {

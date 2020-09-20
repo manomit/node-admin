@@ -12,12 +12,7 @@
                 <i class="icon-desktop"></i><span>Dashboard</span>
             </a>
         </li> --}}
-        <li>
-            <div class="sidebar-title"></div>
-            <a href="/users" class="sidebar-header {{#if_eq url "users" }} active {{/if_eq}}">
-                <i class="icon-user"></i><span>Users</span>
-            </a>
-        </li>
+        
         <li class="{{#if_eq url "sounds" }} active {{/if_eq}}">
             <a href="javascript:void(0)" class="sidebar-header {{#if_eq url "sounds" }} active {{/if_eq}}">
                 <i class="icon-desktop"></i><span>All Sounds</span>
@@ -29,6 +24,14 @@
                 <li><a href="/sounds/language" class="{{#if_eq subUrl "language" }} active {{/if_eq}}"><i class="fa fa-angle-right"></i>Languages</a></li>
             </ul>
         </li>
+
+        <li>
+            <div class="sidebar-title"></div>
+            <a href="/users" class="sidebar-header {{#if_eq url "users" }} active {{/if_eq}}">
+                <i class="icon-user"></i><span>Users</span>
+            </a>
+        </li>
+        
         <li>
             <div class="sidebar-title"></div>
             <a href="/videos" class="sidebar-header {{#if_eq url "videos" }} active {{/if_eq}}">
@@ -39,6 +42,19 @@
             <div class="sidebar-title"></div>
             <a href="/discovery-section" class="sidebar-header {{#if_eq url "discovery-section" }} active {{/if_eq}}">
                 <i class="icon-notepad"></i><span>Discovery sections</span>
+            </a>
+        </li>
+
+        <li>
+            <div class="sidebar-title"></div>
+            <a href="/profile-verification" class="sidebar-header {{#if_eq url "profile-verification" }} active {{/if_eq}}">
+                <i class="icon-notepad"></i><span>Profile verfication</span>
+            </a>
+        </li>
+        <li>
+            <div class="sidebar-title"></div>
+            <a href="/admins" class="sidebar-header {{#if_eq url "admins" }} active {{/if_eq}}">
+                <i class="icon-notepad"></i><span>Manage admins</span>
             </a>
         </li>
         <li>

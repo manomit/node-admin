@@ -1,0 +1,302 @@
+    {{#content "title"}}{{title}}{{/content}}
+    {{#content "style" mode="append"}}
+        <link rel="stylesheet" type="text/css" href="https://d32zu6sws4tz5c.cloudfront.net/css/datatables.css">
+    {{/content}}
+
+    <div class="page-body">
+        <div class="container-fluid">
+            <div class="page-header">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h3>Profile verification
+                            
+                        </h3>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+               
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="basic-1" class="display">
+                                    <thead>
+                                    <tr>
+                                        <th>SL No.</th>
+                                        <th>Username</th>
+                                        <th>Photo</th>
+                                        <th>ID Card</th>
+                                        <th>Status</th>
+                                        <th>Created</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {{#each data}}
+                                            <tr>
+                                                <td>{{math @index "+" 1}}</td>
+                                                <td>{{this.username}}</td>
+                                                {{#if this.photoUrl}}
+                                                    <td><img src="{{this.photoUrl}}" width="40px" height="40px"/></td>
+                                                    <td><img src="{{this.cardUrl}}" width="40px" height="40px"/></td>
+                                                    <td>{{this.status}}</td>
+                                                    <td>{{dateFormat this.createdAt "DD-MM-YYYY HH:mm:ss"}}</td>
+                                                    <td>
+                                                        <a 
+                                                            href="javascript:void(0);" 
+                                                            data-id="{{this._id}}"
+                                                            data-user-id="{{this.userId}}"
+                                                            data-photo-url="{{this.photoUrl}}"
+                                                            data-card-url="{{this.cardUrl}}"
+                                                            class="aEdit"
+                                                        > 
+                                                            <i class="fa fa-cloud-upload"></i>
+                                                        </a>
+                                                        
+                                                        <a href="javascript:void(0)" class="aApproved" data-id="{{this._id}}"><i class="fa fa-check" style="color:green"></i></a>
+                                                        <a href="javascript:void(0)" class="aReject" data-id="{{this._id}}"><i class="fa fa-close" style="color:red"></i></a>
+                                                    </td>
+                                                {{else}}
+                                                    <td>N/A</td>
+                                                    <td>N/A</td>
+                                                    <td>N/A</td>
+                                                    <td>N/A</td>
+                                                    <td>
+                                                         <a 
+                                                            href="javascript:void(0);" 
+                                                            data-id=""
+                                                            data-user-id="{{this.userId}}"
+                                                            data-photo-url=""
+                                                            data-card-url=""
+                                                            class="btn btn-primary btn-sm aEdit"
+                                                        > 
+                                                            Upload
+                                                        </a>
+                                                    </td>
+                                                {{/if}}
+                                                
+                                                
+                                            </tr>
+                                        {{/each}}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addUserProfileModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel2">Profile Data</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="divAlert">
+                    
+                </div>
+                <div class="modal-body">
+                    <form id="frmAddProfileData"> 
+                        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                        <input type="hidden" id="_id" name="_id" value="">
+                        <input type="hidden" id="userId" name="userId" value="">
+                        
+                        <div class="form-group">
+                            <label for="photo" class="col-form-label" >Photo:</label>
+                            <input type="file" class="form-control" name="photo" id="photo" accept="image/*">
+                        </div>
+                        <div class="form-group" id="showPhoto" style="display: none;">
+                            
+                        </div>
+
+                        <div class="form-group">
+                            <label for="idCard" class="col-form-label" >ID Card:</label>
+                            <input type="file" class="form-control" name="idCard" id="idCard" accept="image/*">
+                        </div>
+                        <div class="form-group" id="showIDCard" style="display: none;">
+                            
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnAddData" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    {{#content "script" mode="append"}}
+        <script src="https://d32zu6sws4tz5c.cloudfront.net/js/datatables/jquery.dataTables.min.js"></script>
+        <script src="https://d32zu6sws4tz5c.cloudfront.net/js/datatables/datatable.custom.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/additional-methods.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $(".close").click(function(e) {
+                    $("#_id").val('');
+                    $('#frmAddProfileData')[0].reset();
+                    $("#showPhoto").empty();
+                    $("#showPhoto").hide();
+                    $("#showIDCard").empty();
+                    $("#showIDCard").hide();
+                    
+                });
+
+                $("#btnAddData").click(function(e) {
+                    $("#frmAddProfileData").submit();
+                });
+
+                $("#frmAddProfileData").validate({
+                    rules: {
+                        
+                        photo: {
+                            required: {
+                                depends: function(element) {
+                                    return $("#_id").val() === ""
+                                }
+                            },
+                            accept: "image/*"
+                        },
+                        idCard: {
+                            required: {
+                                depends: function(element) {
+                                    return $("#_id").val() === ""
+                                }
+                            },
+                            accept: "image/*"
+                        }
+                    },
+                    messages: {
+                        photo: {
+                            required: "Please upload photo"
+                        },
+                        idCard: {
+                            required: "Please upload ID Card"
+                        }
+                    },
+                    submitHandler: function (form) {
+                        const formData = new FormData($('#frmAddProfileData')[0]);
+                        $.ajax({
+                            type: "POST",
+                            url: "/profile-verification",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            async: true,
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader('X-CSRF-Token', "{{csrfToken}}");
+                                $("#btnAddData").prop('disabled', true);
+                                $("#btnAddData").html("Loading...");
+                            },
+                            success: function (response) {
+                                $("#divAlert").addClass('alert alert-success');
+                                $("#divAlert").append('<strong>'+response.message+'</strong>');
+                                $("#divAlert").fadeTo(1000, 1000).slideUp(1000, function(){
+                                    $("#divAlert").slideUp(1000);
+                                    $("#btnAddData").prop('disabled', false);
+                                    $("#btnAddData").html("Save");
+                                    window.location.href = "/profile-verification";
+                                });
+                            },
+                            error: function (xhr) {
+                                $("#divAlert").addClass('alert alert-danger');
+                                $("#divAlert").append('<ul></ul>');
+                                Object.keys(xhr.responseJSON.data[0]).map(function(key) {
+                                    $("#divAlert ul").append('<li>'+xhr.responseJSON.data[0][key]+'</li>')
+                                });
+                                $("#divAlert").fadeTo(2000, 2000).slideUp(2000, function(){
+                                    $("#divAlert").slideUp(2000);
+                                    $("#divAlert").empty();
+                                    $("#divAlert").removeClass('alert alert-danger');
+                                    $("#btnAddData").prop('disabled', false);
+                                    $("#btnAddData").html("Save");
+                                });
+                                
+                            }
+                        });
+                    }
+                })
+            });
+
+            $(document).on('click', '.aEdit', function(e) {
+                $("#_id").val($(this).data('id'));
+                $("#userId").val($(this).data('user-id'));
+                
+                //$("#soundFileAudio").attr('src', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+                if($(this).data('photo-url') !== "") {
+                    $("#showPhoto").html('<img src="'+$(this).data('photo-url')+'" width="40px" height="40px"/>');
+                    $("#showPhoto").show();
+                }
+
+                if($(this).data('card-url') !== "") {
+                    $("#showIDCard").html('<img src="'+$(this).data('card-url')+'" width="40px" height="40px"/>');
+                    $("#showIDCard").show();
+                }
+                
+                $("#exampleModalLabel2").html("Profile Data");
+                $("#addUserProfileModal").modal({
+                    show: true,
+                    backdrop: 'static',
+                    keyboard: false
+                }); 
+            });
+
+            $(document).on('click', '.aApproved', function(e) {
+                if(confirm("Are you sure you want to approve this data?")) {
+                    $.ajax({
+                            type: "POST",
+                            url: "/profile-verification/status-change",
+                            data: {
+                                _id: $(this).data('id'),
+                                status: "APPROVED"
+                            },
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader('X-CSRF-Token', "{{csrfToken}}");
+                            },
+                            success: function (response) {
+                                window.location.href = "/profile-verification";
+                                
+                            },
+                            error: function (xhr) {
+                                
+                            }
+                        });
+                }
+            })
+
+            $(document).on('click', '.aReject', function(e) {
+                if(confirm("Are you sure you want to reject this data?")) {
+                    $.ajax({
+                            type: "POST",
+                            url: "/profile-verification/status-change",
+                            data: {
+                                _id: $(this).data('id'),
+                                status: "REJECTED"
+                            },
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader('X-CSRF-Token', "{{csrfToken}}");
+                            },
+                            success: function (response) {
+                                window.location.href = "/profile-verification";
+                                
+                            },
+                            error: function (xhr) {
+                                
+                            }
+                        });
+                }
+            })
+        </script>
+    {{/content}}
